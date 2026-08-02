@@ -226,4 +226,7 @@ poetry.toml
 # LSP config files
 pyrightconfig.json
 
+# Generated CSV output from conversion scripts
+converted/
+
 # End of https://www.toptal.com/developers/gitignore/api/emacs,python
