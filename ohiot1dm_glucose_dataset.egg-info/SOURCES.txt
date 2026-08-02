@@ -1,6 +1,0 @@
-README.md
-pyproject.toml
-ohiot1dm_glucose_dataset.egg-info/PKG-INFO
-ohiot1dm_glucose_dataset.egg-info/SOURCES.txt
-ohiot1dm_glucose_dataset.egg-info/dependency_links.txt
-ohiot1dm_glucose_dataset.egg-info/top_level.txt
