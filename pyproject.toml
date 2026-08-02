@@ -11,6 +11,7 @@ dependencies = [
     "pandas>=3.0.1",
     "scikit-learn>=1.8.0",
     "scipy>=1.11.3",
+    "seaborn>=0.13.2",
     "torch>=2.11.0",
     "torchvision>=0.26.0",
 ]
@@ -21,7 +22,7 @@ dev = [
     "ipython>=9.11.0",
     "jupyter>=1.1.1",
     "nbformat>=5.10.4",
-    "seaborn>=0.13.2",
+    "pfun-cma-model",
 ]
 
 [tool.uv.sources]

@@ -1,0 +1,55 @@
+title: OhioT1DM Glucose Dataset
+description: >-
+  Blood-glucose forecasting and interpolation for Type 1 Diabetes —
+  SimpleLSTM vs PFun CMA model on the OhioT1DM dataset.
+
+baseurl: "/ohiot1dm-glucose-dataset"
+url: "https://pfun-health.github.io"
+
+theme: just-the-docs
+
+# ── Navigation ──────────────────────────────────────────────────────────────
+nav_sort: case_insensitive
+
+# ── Search ───────────────────────────────────────────────────────────────────
+search_enabled: true
+search:
+  heading_level: 2
+  previews: 2
+  preview_words_before: 5
+  preview_words_after: 10
+  tokenizer_separator: /[\s/]+/
+  rel_url: true
+  button: false
+
+# ── Footer ───────────────────────────────────────────────────────────────────
+footer_content: >
+  &copy; 2024&ndash;2026 pfun-health.
+  Released under the MIT Licence.
+
+# ── Back-to-top ──────────────────────────────────────────────────────────────
+back_to_top: true
+back_to_top_text: "Back to top"
+
+# ── Last-edited timestamp ─────────────────────────────────────────────────────
+last_edit_timestamp: true
+last_edit_time_format: "%b %e, %Y"
+
+# ── GitHub source links ───────────────────────────────────────────────────────
+gh_edit_link: true
+gh_edit_link_text: "Edit this page on GitHub"
+gh_edit_repository: "https://github.com/pfun-health/ohiot1dm-glucose-dataset"
+gh_edit_branch: "main"
+gh_edit_source: docs
+gh_edit_view_mode: "tree"
+
+# ── Plugins ──────────────────────────────────────────────────────────────────
+plugins:
+  - jekyll-seo-tag
+
+# ── Exclusions ───────────────────────────────────────────────────────────────
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules/
+  - vendor/
