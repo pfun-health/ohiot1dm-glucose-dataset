@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.12,<3.13"
 dependencies = [
     "duckdb==1.4.4",
+    "jupyterlab>=4.6.2",
     "matplotlib>=3.10.8",
     "numpy>=1.24.0",
     "pandas>=3.0.1",
