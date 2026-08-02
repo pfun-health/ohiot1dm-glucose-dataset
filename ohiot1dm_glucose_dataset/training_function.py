@@ -27,6 +27,8 @@ def train(
     lr: float = 0.01,
     num_epochs: int = 100,
     batch_size: int = 256,
+    best_model_path: str | Path | None = "best_model.pth",
+    model_weights_path: str | Path | None = "simple_lstm_model.pth",
 ):
     """Train *net_class* on the Ohio T1DM dataset and return the best model.
 
@@ -96,11 +98,13 @@ def train(
             best_model_dict = model.state_dict()
 
     plot_losses(train_losses, test_losses)
-    t.save(best_model_dict, "best_model.pth")
+    if best_model_path is not None:
+        t.save(best_model_dict, best_model_path)
 
     assert best_model_dict is not None
     model.load_state_dict(best_model_dict)
-    t.save(model.state_dict(), "simple_lstm_model.pth")
+    if model_weights_path is not None:
+        t.save(model.state_dict(), model_weights_path)
 
     return train_losses, test_losses, model
 
