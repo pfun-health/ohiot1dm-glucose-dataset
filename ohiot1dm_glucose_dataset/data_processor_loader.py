@@ -1,5 +1,6 @@
 import os
 import zipfile
+from pathlib import Path
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 import numpy as np
@@ -7,8 +8,11 @@ from scipy.interpolate import CubicSpline
 from torch.utils.data import Dataset, DataLoader
 import torch as t
 
-path=os.getcwd()
+from pathlib import Path
 
+# Base path is the repository root (two levels up from this file inside the package)
+_REPO_ROOT = Path(__file__).parents[1]
+path = str(_REPO_ROOT)
 
 
 class OhioT1DMDataset(Dataset):

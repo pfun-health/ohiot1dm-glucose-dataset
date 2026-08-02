@@ -3,11 +3,17 @@ import torch.nn as nn
 import matplotlib.pyplot as plt
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 import numpy as np
+from pathlib import Path
 
-# Import necessary modules from other scripts
-from data_processor_loader import create_dataloader, preprocess, get_scaler
-from lstm_model import SimpleLSTM
-from training_function import train, plot_losses
+from ohiot1dm_glucose_dataset.data_processor_loader import create_dataloader, preprocess, get_scaler
+from ohiot1dm_glucose_dataset.lstm_model import SimpleLSTM
+from ohiot1dm_glucose_dataset.training_function import train, plot_losses
+
+_REPO_ROOT = Path(__file__).parents[1]
+test_data_dirs = [
+    str(_REPO_ROOT / "Ohio Data" / "Ohio2018_processed" / "test"),
+    str(_REPO_ROOT / "Ohio Data" / "Ohio2020_processed" / "test"),
+]
 
 def get_prediction_ahead(model: t.nn.Module, input_seq:t.Tensor, n_steps:int):
   model.eval()

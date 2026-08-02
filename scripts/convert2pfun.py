@@ -2,7 +2,10 @@
 
 """convert2pfun.py"""
 
-from data_processor_loader import DataLoader, OhioT1DMDataset
+import os
+from typing import Optional, List
+from torch.utils.data import DataLoader
+from ohiot1dm_glucose_dataset.data_processor_loader import OhioT1DMDataset
 from pathlib import Path
 
 

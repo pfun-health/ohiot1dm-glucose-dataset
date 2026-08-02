@@ -1,19 +1,38 @@
 [project]
 name = "ohiot1dm-glucose-dataset"
 version = "0.1.0"
-description = "Add your description here"
+description = "Blood glucose forecasting with LSTM and the PFun CMA model using the OhioT1DM dataset"
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.12,<3.13"
 dependencies = [
     "duckdb>=1.5.1",
     "matplotlib>=3.10.8",
+    "numpy>=1.24.0",
     "pandas>=3.0.1",
     "scikit-learn>=1.8.0",
+    "scipy>=1.11.3",
     "torch>=2.11.0",
     "torchvision>=0.26.0",
 ]
 
 [dependency-groups]
 dev = [
+    "ipykernel>=6.29.5",
     "ipython>=9.11.0",
+    "jupyter>=1.1.1",
+    "nbformat>=5.10.4",
+    "seaborn>=0.13.2",
 ]
+
+[tool.uv.sources]
+pfun-cma-model = { git = "https://github.com/pfun-health/pfun-cma-model" }
+
+[project.scripts]
+ohiot1dm-train = "ohiot1dm_glucose_dataset.main:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["ohiot1dm_glucose_dataset"]

@@ -3,16 +3,18 @@ from torch import nn
 
 import torch.optim as optim
 import matplotlib.pyplot as plt
-from data_processor_loader import create_dataloader
-import os
-path=os.getcwd()
+from ohiot1dm_glucose_dataset.data_processor_loader import create_dataloader
+from pathlib import Path
+
+_REPO_ROOT = Path(__file__).parents[1]
+path = str(_REPO_ROOT)
 train_data_dirs = [
-    f"{path}/Ohio Data/Ohio2018_processed/train",
-    f"{path}/Ohio Data/Ohio2020_processed/train"
+    str(_REPO_ROOT / "Ohio Data" / "Ohio2018_processed" / "train"),
+    str(_REPO_ROOT / "Ohio Data" / "Ohio2020_processed" / "train"),
 ]
 test_data_dirs = [
-    f"{path}/Ohio Data/Ohio2018_processed/test",
-    f"{path}/Ohio Data/Ohio2020_processed/test"
+    str(_REPO_ROOT / "Ohio Data" / "Ohio2018_processed" / "test"),
+    str(_REPO_ROOT / "Ohio Data" / "Ohio2020_processed" / "test"),
 ]
 
 # Include the training function
@@ -108,7 +110,7 @@ def train(
   assert best_model_dict is not None
   model.load_state_dict(best_model_dict)
 
-  t.save(lstm_model.state_dict(), 'simple_lstm_model.pth')
+  t.save(model.state_dict(), 'simple_lstm_model.pth')
 
   return train_losses, test_losses, model
 
