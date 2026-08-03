@@ -5,6 +5,77 @@ Format is inspired by [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [Unreleased] — 2026-08-02 (third pass)
+
+### Added
+- `ohiot1dm_glucose_dataset/pfun_utils.py` — new module bridging OhioT1DM
+  processed CSVs to the `pfun-cma-model` package:
+  - `load_ohio_csv` — read a CSV, attach a tz-aware UTC 5-minute time axis
+    anchored at `2020-01-01`, and set the `sg` / `value` glucose columns.
+  - `convert_ohio_to_pfun` — drop `missing_cbg != 0` rows and return pfun's
+    `format_data` representation (`time, value, tod, t, G`, `G` in `[0, 2]`).
+  - `fit_patient` / `fit_patients` — fit the CMA model to one or many CSVs
+    (per-file try/except in the batch helper).
+  - `unscale_glucose` — numerically invert pfun's saturating
+    `normalize_glucose` sigmoid back to mg/dL.
+  - `collect_predictions` / `collect_interpolation` — forecast arrays in
+    normalized space; interpolation deliberately returns empty arrays.
+  - `regression_metrics` / `glucose_zone` / `zone_metrics` — RMSE/MAE/MARD/R²
+    and a clinical glucose-zone confusion matrix.
+- `docs/api/pfun-utils.md` — API reference for the new module, linked from
+  `docs/api/index.md` and `docs/getting-started.md`.
+
+### Changed
+- `scripts/convert2pfun.py` — rewritten as a pfun-conversion CLI:
+  `--list`, `--convert`, `--fit`, `--metrics`, `--N`, `--units`, `--format`,
+  `--n-steps`, `--outdir`. (Previously: an LSTM-scaled markdown dump.)
+- `ohiot1dm_glucose_dataset/__init__.py` — exports extended with the full
+  `pfun_utils` API.
+
+### Design decisions
+- **Correct sigmoid inverse.** `unscale_glucose` inverts
+  `normalize_glucose` with `scipy.optimize.brentq` and returns the
+  saturation onset (~221 mg/dL) for ceiling targets, replacing the
+  comparison notebook's broken three-argument `normalize_glucose` call and
+  its `G * 200` approximation.
+- **No module-level globals.** Every function is pure; only frozen constants
+  (`HYPO_THRESHOLD`, `HYPER_THRESHOLD`, `ZONE_LABELS`, `_REFERENCE_TIME`)
+  live at module scope.
+- **Empty interpolation is documented behaviour.** OhioT1DM missing rows
+  carry NaN `cbg`, so there is no ground truth to score interpolation
+  against; `collect_interpolation` warns and returns empty arrays instead of
+  fabricating values.
+- **Lazy pfun imports.** `pfun-cma-model` stays a dev dependency; importing
+  the package never requires it, and any function needing pfun raises a
+  helpful `ImportError` (pointing at `uv sync --dev`) when it is missing.
+- **No `tabulate` dependency.** CLI tables are rendered with f-strings and
+  pandas `to_string()`.
+
+### Review fixes
+- `load_ohio_csv` now returns just the augmented `pd.DataFrame` (the earlier
+  `(df, sg_min, sg_max)` tuple is gone) and validates input at the boundary:
+  `cbg` / `missing_cbg` must be present and the file must be non-empty.
+- Time axis is phase-aware: anchored at `2020-01-01` UTC plus
+  `5 min * (first 5minute_intervals_timestamp % 288)`. Every test counter's
+  integer part is an exact multiple of 288 (the midnight-UTC epoch), so
+  `first_counter % 288` derives the true sub-interval time-of-day phase:
+  559/563 → 0.2 (1 min), 570 → 0.8 (4 min), 591 → 0.6 (3 min), and 4 of
+  the 6 Ohio2020 files have phases up to 4.35 min; only 575/588 are exactly
+  0. Residuals stay identical for 575/588 while phased files shift slightly
+  (e.g., 559-ws-testing 50.0297 → 50.2209), so the notebook's published 559
+  residual now legitimately differs from the library's output.
+- `unscale_glucose` is mgdl-only; any other `units` raises `ValueError`
+  because the OhioT1DM pipeline fits in mgdl-normalized space and pfun's
+  mmoll normalize curve is degenerate.
+- `--convert` is resilient: per-file failures print `FAILED:` lines and the
+  run finishes with `Wrote k of n file(s).`
+- CLI `--units` choices are `["mgdl"]` only; `--N` and `--n-steps` are
+  validated as positive integers; `--outdir` is created as needed.
+- Lazy pfun imports create `logs/` first and chain the underlying exception
+  into the `ImportError`.
+
+---
+
 ## [Unreleased] — 2026-08-02 (second pass)
 
 ### Added
