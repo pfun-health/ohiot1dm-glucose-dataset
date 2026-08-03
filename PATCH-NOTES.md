@@ -5,6 +5,42 @@ Format is inspired by [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [Unreleased] — 2026-08-03 (fourth pass)
+
+### Changed
+- `notebooks/02_comparison_lstm_vs_cma.ipynb` — ported onto the
+  `pfun_utils` helpers:
+  - CMA fitting now uses `pfun_utils.fit_patient` (phase-aware UTC time
+    axis, `missing_cbg` filtering, mgdl-normalized fit) and the collectors
+    `collect_predictions` / `collect_interpolation`.
+  - CMA unscaling uses `unscale_glucose` (numeric sigmoid inversion) instead
+    of the broken three-argument `normalize_glucose` call and the
+    `G * 200` approximation; the dead `cma_unscale_glucose` helper and the
+    local `regression_metrics` / `glucose_zone` / `zone_metrics` /
+    `load_ohio_csv` reimplementations were removed in favour of the library
+    helpers.
+  - Fixed the undefined `ma_yt_ip` typo (`cma_yt_ip`), the horizon wording
+    (`N_STEPS_AHEAD = 120` → 600 min), the `REPO_ROOT` discovery (walk up
+    to the `Ohio Data/` folder instead of the `Path("__file__")` trick),
+    broken markdown placeholders in sections 4 and 10, and a stray `]` in
+    the heatmap suptitle.
+  - The LSTM forecast collection is now batched (one forward pass per step
+    per batch) so the 600-min horizon runs end-to-end without a
+    `KeyboardInterrupt`; semantics are unchanged (one point pair per sample:
+    the prediction at `n_steps` ahead versus the observed value).
+  - Validated end-to-end: `uv run jupyter nbconvert --to notebook --execute`
+    completes cleanly — 12 CMA fits (559 residual 50.2209, matching the
+    phase-aware time axis), LSTM forecasting 34 181 samples, CMA forecasting
+    2 016 samples, CMA interpolation 0 (documented empty), fresh
+    regression/zone outputs.
+
+### Removed
+- `.virtual_documents/` scratch copies (JupyterLab virtual documents, now
+  gitignored) and the tracked `notebooks/*.pth` checkpoints (training
+  artifacts, now gitignored).
+
+---
+
 ## [Unreleased] — 2026-08-02 (third pass)
 
 ### Added

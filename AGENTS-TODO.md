@@ -7,23 +7,44 @@ Check items off as they are completed; add new items as they are discovered.
 
 ## Open
 
-- [ ] Regenerate `uv.lock` after adding `pfun-cma-model` and new dev deps.
-      (Requires network access: `uv lock`.)
 - [ ] Enable GitHub Pages for the repository (Settings → Pages → Source:
       GitHub Actions) so `.github/workflows/pages.yml` can deploy.
-- [ ] Validate that `notebooks/02_comparison_lstm_vs_cma.ipynb` runs
-      end-to-end once `pfun-cma-model` is installed (`uv sync --dev`).
-- [ ] Add a `docs/Gemfile.lock` once `bundle install` has been run locally.
-- [ ] Port `notebooks/02_comparison_lstm_vs_cma.ipynb` onto the new
-      `pfun_utils` helpers — it still uses the broken 3-arg
-      `normalize_glucose` call / `G * 200` approximation that
-      `unscale_glucose` replaces.
+- [ ] Add a `docs/Gemfile.lock` once `bundle install` has been run locally
+      (requires a real Ruby/bundler toolchain; the dev shell's `bundle` is a
+      stub at present).
 - [ ] Validate the Jekyll site renders the new `docs/api/pfun-utils.md` page
       once `docs/Gemfile.lock` exists (`bundle exec jekyll serve`).
+- [ ] Investigate the large MARD on LSTM rows: `get_scaler` fills missing
+      `cbg` rows with `min - 0.01·|min|` before MinMax scaling, so
+      `regression_metrics` MARD (`|Δ|/max(y_true, 1e-6)`) blows up on the
+      filled rows (LSTM forecast MARD ≈ 2e6, interpolation ≈ 7e5). Masking
+      low-`y_true` pairs or excluding filled rows needs a deliberate metric
+      decision.
 
 ---
 
 ## Completed
+
+- [x] Regenerate `uv.lock` after adding `pfun-cma-model` and new dev deps
+      (verified: the lock pins `pfun-cma-model` at git commit `2819721...`).
+- [x] Validate that `notebooks/02_comparison_lstm_vs_cma.ipynb` runs
+      end-to-end (`uv run jupyter nbconvert --to notebook --execute`).
+- [x] Port `notebooks/02_comparison_lstm_vs_cma.ipynb` onto the new
+      `pfun_utils` helpers — `unscale_glucose` (replacing the broken 3-arg
+      `normalize_glucose` call and the `G * 200` approximation),
+      `collect_predictions` / `collect_interpolation`,
+      `regression_metrics`, `glucose_zone`, `load_ohio_csv` / `fit_patient`;
+      removed the local reimplementations and the dead `cma_unscale_glucose`.
+- [x] Fix notebook 02 bugs surfaced during the port: the undefined
+      `ma_yt_ip` typo (`cma_yt_ip`), the horizon wording (`N_STEPS_AHEAD`
+      = 120 → 600 min), robust `REPO_ROOT` discovery, broken markdown
+      placeholders in sections 4 and 10, and a stray `]` in the heatmap
+      suptitle.
+- [x] Batch the LSTM autoregressive forecast collection in notebook 02
+      (one forward pass per step per batch instead of per sample) so the
+      600-min horizon runs end-to-end without a `KeyboardInterrupt`.
+- [x] Gitignore and untrack `.virtual_documents/` and `notebooks/*.pth`
+      (JupyterLab scratch copies and regenerated training artifacts).
 
 - [x] Move `Glucese_proj_notebook.ipynb` →
       `notebooks/01_lstm_glucose_exploration.ipynb`.

@@ -229,4 +229,10 @@ pyrightconfig.json
 # Generated CSV output from conversion scripts
 converted/
 
+# JupyterLab virtual documents (scratch copies, not source of truth)
+.virtual_documents/
+
+# PyTorch model checkpoints (training artifacts, regenerated on every run)
+notebooks/*.pth
+
 # End of https://www.toptal.com/developers/gitignore/api/emacs,python
