@@ -3,7 +3,7 @@ name = "ohiot1dm-glucose-dataset"
 version = "0.1.0"
 description = "Blood glucose forecasting with LSTM and the PFun CMA model using the OhioT1DM dataset"
 readme = "README.md"
-requires-python = ">=3.12,<3.13"
+requires-python = ">=3.12,<3.14"
 dependencies = [
     "duckdb==1.4.4",
     "matplotlib>=3.10.8",
