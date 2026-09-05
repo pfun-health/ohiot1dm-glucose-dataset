@@ -2,7 +2,7 @@
   description = "OhioT1DM glucose dataset — LSTM and CMA model dev environment";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
     flake-utils.url = "github:numtide/flake-utils";
   };
 
@@ -49,6 +49,9 @@
             # Silence the numba threading layer warnings that arise on some
             # systems when importing pfun-cma-model without a GPU.
             export NUMBA_THREADING_LAYER="workqueue"
+
+            # manylinux torch wheels need libstdc++ from the nix toolchain
+            export LD_LIBRARY_PATH="${pkgs.stdenv.cc.cc.lib}/lib:$LD_LIBRARY_PATH"
           '';
         };
       }
