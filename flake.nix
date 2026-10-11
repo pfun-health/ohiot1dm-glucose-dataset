@@ -16,7 +16,7 @@
       system:
       let
         pkgs = import nixpkgs { inherit system; };
-        pythonVersion = pkgs.python312;
+        pythonVersion = pkgs.python313;
       in
       {
         devShells.default = pkgs.mkShell {
